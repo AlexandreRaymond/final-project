@@ -1,11 +1,29 @@
+"use strict";
+
 const express = require("express");
-const app = express();
-const port = 3000;
+const morgan = require("morgan");
 
-app.get("/", (req, res) => {
-  res.send("Hi! apple");
-});
+const PORT = 4000;
 
-app.listen(port, () => {
-  console.log(`example app listening on port ${port}`);
-});
+express()
+  .use(function (req, res, next) {
+    res.header(
+      "Access-Control-Allow-Methods",
+      "OPTIONS, HEAD, GET, PUT, POST, DELETE"
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  })
+  .use(morgan("tiny"))
+  .use(express.static("./server/assets"))
+  .use(express.json())
+  .use(express.urlencoded({ extended: false }))
+  .use("/", express.static(__dirname + "/"))
+
+  // GET fetches
+
+  // Listen
+  .listen(PORT, () => console.info(`Listening on port ${PORT}`));
